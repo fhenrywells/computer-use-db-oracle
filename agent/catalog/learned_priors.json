@@ -1,0 +1,48 @@
+{
+  "version": "1",
+  "by_workload_view": {
+    "buy_exact_sku": {
+      "HOME": {
+        "Search": 1.0
+      },
+      "SEARCH_RESULTS": {
+        "OpenResult": 1.0
+      },
+      "PRODUCT_DETAIL": {
+        "AddToCart": 1.0
+      }
+    },
+    "find_cheapest_under_constraints": {
+      "HOME": {
+        "Search": 1.0
+      },
+      "SEARCH_RESULTS": {
+        "OpenResult": 0.5789473684210527,
+        "SortBy": 0.10526315789473684,
+        "ApplyFacet": 0.3157894736842105
+      },
+      "PRODUCT_DETAIL": {
+        "AddToCart": 1.0
+      }
+    },
+    "find_highest_rated_in_brand_category": {
+      "HOME": {
+        "Search": 1.0
+      },
+      "SEARCH_RESULTS": {
+        "OpenResult": 0.34782608695652173,
+        "SortBy": 0.17391304347826086,
+        "ApplyFacet": 0.4782608695652174
+      },
+      "PRODUCT_DETAIL": {
+        "AddToCart": 1.0
+      }
+    },
+    "graph_browse_related": {
+      "PRODUCT_DETAIL": {
+        "AddToCart": 0.5,
+        "OpenRelated": 0.5
+      }
+    }
+  }
+}

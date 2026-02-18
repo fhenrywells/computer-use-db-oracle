@@ -8,6 +8,11 @@ import yaml
 from pymongo import MongoClient
 
 from agentlab.catalog.loader import load_ui_catalog
+from agentlab.control.priors import (
+    load_learned_priors,
+    save_learned_priors,
+    update_priors_from_episodes,
+)
 from agentlab.env.browser_playwright_env import BrowserPlaywrightEnv
 from agentlab.env.simazon_env import SimazonEnv
 from agentlab.eval.metrics import compute_rollups
@@ -25,6 +30,8 @@ def main() -> None:
     parser.add_argument("--db", default="simazon")
     parser.add_argument("--collection", default="products")
     parser.add_argument("--screenshot-base-url", default=os.getenv("SIMAZON_BASE_URL", ""))
+    parser.add_argument("--learn-priors-path", default="agent/catalog/learned_priors.json")
+    parser.add_argument("--learn-priors-lr", type=float, default=0.5)
     parser.add_argument("--out", default="experiments/reports/last_run.json")
     parser.add_argument("--summary-out", default="")
     args = parser.parse_args()
@@ -36,6 +43,7 @@ def main() -> None:
 
     tasks = load_task_templates(args.tasks_file)
     catalog = load_ui_catalog(args.catalog)
+    learned_priors = load_learned_priors(args.learn_priors_path)
 
     results: list[dict] = []
     client = MongoClient(args.mongo_uri)
@@ -44,14 +52,21 @@ def main() -> None:
         for idx, task_template in enumerate(tasks):
             task = resolve_task_template(task_template, products_col, seed=base_seed + idx)
             for variant in variants:
-                if variant == "screenshot_based":
+                if variant in {"screenshot_based", "vision_ocr"}:
                     if not args.screenshot_base_url:
-                        raise ValueError("screenshot_based variant requires --screenshot-base-url")
+                        raise ValueError(f"{variant} variant requires --screenshot-base-url")
                     env = BrowserPlaywrightEnv(args.screenshot_base_url)
                 else:
                     env = SimazonEnv(args.mongo_uri, db=args.db, collection=args.collection)
                 try:
-                    episode = run_episode(env, task, variant, catalog, max_steps=max_steps)
+                    episode = run_episode(
+                        env,
+                        task,
+                        variant,
+                        catalog,
+                        max_steps=max_steps,
+                        learned_priors_model=learned_priors,
+                    )
                 finally:
                     env.close()
                 results.append(episode)
@@ -62,11 +77,15 @@ def main() -> None:
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(results, indent=2), encoding="utf-8")
 
+    learned_priors = update_priors_from_episodes(learned_priors, results, lr=args.learn_priors_lr)
+    save_learned_priors(args.learn_priors_path, learned_priors)
+
     rollups = compute_rollups(results)
     summary = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "config": str(args.config),
         "episodes_file": str(out),
+        "learned_priors_file": str(args.learn_priors_path),
         "rollups": rollups,
     }
     if args.summary_out:

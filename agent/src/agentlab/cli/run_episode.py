@@ -6,6 +6,7 @@ from pathlib import Path
 from pymongo import MongoClient
 
 from agentlab.catalog.loader import load_ui_catalog
+from agentlab.control.priors import load_learned_priors
 from agentlab.env.browser_playwright_env import BrowserPlaywrightEnv
 from agentlab.env.simazon_env import SimazonEnv
 from agentlab.eval.runner import run_episode
@@ -19,7 +20,7 @@ def main() -> None:
     parser.add_argument(
         "--variant",
         default="typed_action",
-        choices=["baseline_freeform", "state_aware", "typed_action", "screenshot_based"],
+        choices=["baseline_freeform", "state_aware", "typed_action", "typed_action_priors", "screenshot_based", "vision_ocr"],
     )
     parser.add_argument("--tasks-file", default="tasks/starter_20.json")
     parser.add_argument("--catalog", default="agent/catalog/ui_catalog.yaml")
@@ -27,6 +28,7 @@ def main() -> None:
     parser.add_argument("--db", default="simazon")
     parser.add_argument("--collection", default="products")
     parser.add_argument("--screenshot-base-url", default=os.getenv("SIMAZON_BASE_URL", ""))
+    parser.add_argument("--learned-priors-path", default="agent/catalog/learned_priors.json")
     parser.add_argument("--max-steps", type=int, default=30)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--out", default="")
@@ -45,14 +47,22 @@ def main() -> None:
         client.close()
 
     catalog = load_ui_catalog(args.catalog)
-    if args.variant == "screenshot_based":
+    if args.variant in {"screenshot_based", "vision_ocr"}:
         if not args.screenshot_base_url:
-            raise ValueError("screenshot_based requires --screenshot-base-url (e.g. https://<domain>)")
+            raise ValueError(f"{args.variant} requires --screenshot-base-url (e.g. https://<domain>)")
         env = BrowserPlaywrightEnv(args.screenshot_base_url)
     else:
         env = SimazonEnv(args.mongo_uri, db=args.db, collection=args.collection)
+    learned_priors = load_learned_priors(args.learned_priors_path)
     try:
-        episode = run_episode(env, task, args.variant, catalog, max_steps=args.max_steps)
+        episode = run_episode(
+            env,
+            task,
+            args.variant,
+            catalog,
+            max_steps=args.max_steps,
+            learned_priors_model=learned_priors,
+        )
     finally:
         env.close()
 

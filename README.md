@@ -130,6 +130,20 @@ Notes for screenshot-based variant:
   - `playwright install chromium`
 - `--screenshot-base-url` must point to a running Simazon UI (`/ui` routes).
 
+Vision OCR variant:
+- Use `vision_ocr` in experiment config variants.
+- OCR provider order: `Mistral OCR` (if `MISTRAL_API_KEY` set), then `tesseract` (`pytesseract`).
+
+Learned priors:
+- Priors are updated from successful trajectories after each experiment run.
+- File: `agent/catalog/learned_priors.json`
+
+Convergence test:
+
+```bash
+PYTHONPATH=agent/src python3 -m unittest agent/tests/test_priors_convergence.py
+```
+
 ## Deploy Fake Storefront On Render
 
 This repo includes a Render Blueprint at:
