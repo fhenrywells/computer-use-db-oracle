@@ -19,12 +19,13 @@ _LOCK = threading.Lock()
 
 
 class RunExperimentRequest(BaseModel):
-    config: str = "experiments/configs/exp_screenshot_compare.yaml"
+    config: str = "experiments/configs/exp_base.yaml"
     tasks_file: str = "tasks/starter_20.json"
     catalog: str = "agent/catalog/ui_catalog.yaml"
     mongo_uri: str | None = None
     mongo_db: str | None = None
     collection: str = "products"
+    screenshot_base_url: str | None = None
     max_steps: int | None = None
 
 
@@ -52,11 +53,9 @@ def _require_admin(request: Request) -> None:
 
 def _run_job(job_id: str, payload: RunExperimentRequest) -> None:
     root = _repo_root()
-    reports_dir = root / "experiments" / "reports" / "admin"
-    reports_dir.mkdir(parents=True, exist_ok=True)
-    stamp = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    out = reports_dir / f"{job_id}_{stamp}.json"
-    summary = reports_dir / f"{job_id}_{stamp}.summary.json"
+    with _LOCK:
+        out = Path(_JOBS[job_id]["out"])
+        summary = Path(_JOBS[job_id]["summary_out"])
 
     cmd = [
         sys.executable,
@@ -74,6 +73,8 @@ def _run_job(job_id: str, payload: RunExperimentRequest) -> None:
         payload.mongo_db or os.getenv("MONGO_DB", "simazon"),
         "--collection",
         payload.collection,
+        "--screenshot-base-url",
+        payload.screenshot_base_url or os.getenv("SIMAZON_BASE_URL", ""),
         "--out",
         str(out),
         "--summary-out",
@@ -96,23 +97,29 @@ def _run_job(job_id: str, payload: RunExperimentRequest) -> None:
         _JOBS[job_id]["status"] = "succeeded" if proc.returncode == 0 else "failed"
         _JOBS[job_id]["finished_at"] = _now()
         _JOBS[job_id]["returncode"] = proc.returncode
-        _JOBS[job_id]["out"] = str(out)
-        _JOBS[job_id]["summary_out"] = str(summary)
         _JOBS[job_id]["stdout_tail"] = (proc.stdout or "")[-4000:]
         _JOBS[job_id]["stderr_tail"] = (proc.stderr or "")[-4000:]
-        _JOBS[job_id]["replay_url"] = f"/ui/replay?file={out}"
 
 
 @router.post("/run-experiment")
 def run_experiment(payload: RunExperimentRequest, request: Request):
     _require_admin(request)
     job_id = uuid.uuid4().hex[:12]
+    root = _repo_root()
+    reports_dir = root / "experiments" / "reports" / "admin"
+    reports_dir.mkdir(parents=True, exist_ok=True)
+    stamp = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    out = reports_dir / f"{job_id}_{stamp}.json"
+    summary = reports_dir / f"{job_id}_{stamp}.summary.json"
     with _LOCK:
         _JOBS[job_id] = {
             "id": job_id,
             "status": "queued",
             "created_at": _now(),
             "payload": payload.model_dump(),
+            "out": str(out),
+            "summary_out": str(summary),
+            "replay_url": f"/ui/replay?file={out}",
         }
     t = threading.Thread(target=_run_job, args=(job_id, payload), daemon=True)
     t.start()

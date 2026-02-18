@@ -1,13 +1,16 @@
 import argparse
 import json
+import os
 from pathlib import Path
 
 from pymongo import MongoClient
 
 from agentlab.catalog.loader import load_ui_catalog
+from agentlab.env.browser_playwright_env import BrowserPlaywrightEnv
 from agentlab.env.simazon_env import SimazonEnv
 from agentlab.eval.runner import run_episode
 from agentlab.eval.task_resolver import resolve_task_template
+from agentlab.eval.tasks import load_task_templates
 
 
 def main() -> None:
@@ -23,12 +26,13 @@ def main() -> None:
     parser.add_argument("--mongo-uri", default="mongodb://localhost:27017")
     parser.add_argument("--db", default="simazon")
     parser.add_argument("--collection", default="products")
+    parser.add_argument("--screenshot-base-url", default=os.getenv("SIMAZON_BASE_URL", ""))
     parser.add_argument("--max-steps", type=int, default=30)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--out", default="")
     args = parser.parse_args()
 
-    templates = json.loads(Path(args.tasks_file).read_text(encoding="utf-8"))
+    templates = load_task_templates(args.tasks_file)
     selected = next((t for t in templates if t.get("task_id") == args.task_id), None)
     if not selected:
         raise ValueError(f"task_id {args.task_id} not found in {args.tasks_file}")
@@ -41,7 +45,12 @@ def main() -> None:
         client.close()
 
     catalog = load_ui_catalog(args.catalog)
-    env = SimazonEnv(args.mongo_uri, db=args.db, collection=args.collection)
+    if args.variant == "screenshot_based":
+        if not args.screenshot_base_url:
+            raise ValueError("screenshot_based requires --screenshot-base-url (e.g. https://<domain>)")
+        env = BrowserPlaywrightEnv(args.screenshot_base_url)
+    else:
+        env = SimazonEnv(args.mongo_uri, db=args.db, collection=args.collection)
     try:
         episode = run_episode(env, task, args.variant, catalog, max_steps=args.max_steps)
     finally:

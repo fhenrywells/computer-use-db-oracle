@@ -1,5 +1,6 @@
 import argparse
 import json
+import os
 from pathlib import Path
 from datetime import datetime, timezone
 
@@ -7,10 +8,12 @@ import yaml
 from pymongo import MongoClient
 
 from agentlab.catalog.loader import load_ui_catalog
+from agentlab.env.browser_playwright_env import BrowserPlaywrightEnv
 from agentlab.env.simazon_env import SimazonEnv
 from agentlab.eval.metrics import compute_rollups
 from agentlab.eval.runner import run_episode
 from agentlab.eval.task_resolver import resolve_task_template
+from agentlab.eval.tasks import load_task_templates
 
 
 def main() -> None:
@@ -21,6 +24,7 @@ def main() -> None:
     parser.add_argument("--mongo-uri", default="mongodb://localhost:27017")
     parser.add_argument("--db", default="simazon")
     parser.add_argument("--collection", default="products")
+    parser.add_argument("--screenshot-base-url", default=os.getenv("SIMAZON_BASE_URL", ""))
     parser.add_argument("--out", default="experiments/reports/last_run.json")
     parser.add_argument("--summary-out", default="")
     args = parser.parse_args()
@@ -30,7 +34,7 @@ def main() -> None:
     max_steps = int(cfg.get("max_steps_per_episode", 30))
     base_seed = int(cfg.get("seed", 42))
 
-    tasks = json.loads(Path(args.tasks_file).read_text(encoding="utf-8"))
+    tasks = load_task_templates(args.tasks_file)
     catalog = load_ui_catalog(args.catalog)
 
     results: list[dict] = []
@@ -40,7 +44,12 @@ def main() -> None:
         for idx, task_template in enumerate(tasks):
             task = resolve_task_template(task_template, products_col, seed=base_seed + idx)
             for variant in variants:
-                env = SimazonEnv(args.mongo_uri, db=args.db, collection=args.collection)
+                if variant == "screenshot_based":
+                    if not args.screenshot_base_url:
+                        raise ValueError("screenshot_based variant requires --screenshot-base-url")
+                    env = BrowserPlaywrightEnv(args.screenshot_base_url)
+                else:
+                    env = SimazonEnv(args.mongo_uri, db=args.db, collection=args.collection)
                 try:
                     episode = run_episode(env, task, variant, catalog, max_steps=max_steps)
                 finally:

@@ -20,12 +20,16 @@ def _pick_action(
     if variant == "baseline_freeform":
         return baseline_next_action(task, observation)
     if variant == "screenshot_based":
+        add_to_cart_count = int(sum(1 for s in observation.get("_history", []) if s.get("action", {}).get("type") == "AddToCart"))
+        opened_related_count = int(
+            sum(1 for s in observation.get("_history", []) if s.get("action", {}).get("type") == "OpenRelated")
+        )
         visual_obs = {
             "view_id": observation.get("view_id"),
-            "result_count": observation.get("result_count", 0),
-            "sort_key": observation.get("sort_key", "relevance"),
-            "has_related": bool(observation.get("related_asins")),
-            "cart_count": len(observation.get("cart_asins", [])) if isinstance(observation.get("cart_asins"), list) else 0,
+            "add_to_cart_count": add_to_cart_count,
+            "opened_related_count": opened_related_count,
+            "step_idx": observation.get("step_idx", 0),
+            "screenshot_path": observation.get("screenshot_path"),
         }
         return screenshot_next_action(task, visual_obs)
     if variant == "state_aware":
@@ -51,8 +55,14 @@ def run_episode(
     steps_to_success: int | None = None
 
     for t in range(max_steps):
-        action = _pick_action(variant, task, observation, catalog, target_asin)
-        next_obs, info = env.step(action)
+        # lightweight in-memory history exposed only to screenshot policy for step-local context.
+        obs_for_policy = dict(observation)
+        obs_for_policy["_history"] = steps
+        action = _pick_action(variant, task, obs_for_policy, catalog, target_asin)
+        if variant == "screenshot_based" and hasattr(env, "step"):
+            next_obs, info = env.step(action, step_idx=t + 1)
+        else:
+            next_obs, info = env.step(action)
         done = oracle_satisfied(task, next_obs, expected_asin=target_asin)
         step = {
             "t": t,
@@ -61,6 +71,7 @@ def run_episode(
             "postcondition_ok": info.get("postcondition_ok", True),
             "event": info.get("event"),
             "state_vars": next_obs,
+            "screenshot_path": info.get("screenshot_path"),
             "oracle_done": done,
         }
         steps.append(step)

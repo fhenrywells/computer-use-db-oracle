@@ -119,8 +119,16 @@ PYTHONPATH=agent/src .venv/bin/python -m agentlab.cli.run_experiment \
   --mongo-uri mongodb://localhost:27017 \
   --db simazon \
   --collection products \
+  --screenshot-base-url http://localhost:8000 \
   --out experiments/reports/screenshot_compare.json
 ```
+
+Notes for screenshot-based variant:
+- It now uses Playwright + real browser screenshots (`agent/src/agentlab/env/browser_playwright_env.py`).
+- Install dependencies locally:
+  - `pip install playwright pillow`
+  - `playwright install chromium`
+- `--screenshot-base-url` must point to a running Simazon UI (`/ui` routes).
 
 ## Deploy Fake Storefront On Render
 
