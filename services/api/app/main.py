@@ -3,7 +3,7 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
-from app.routes import cart, checkout, products, search, ui
+from app.routes import admin, cart, checkout, products, search, ui
 
 app = FastAPI(title="simazon-api")
 app.include_router(search.router, prefix="/search", tags=["search"])
@@ -11,6 +11,7 @@ app.include_router(products.router, prefix="/products", tags=["products"])
 app.include_router(cart.router, prefix="/cart", tags=["cart"])
 app.include_router(checkout.router, prefix="/checkout", tags=["checkout"])
 app.include_router(ui.router, tags=["ui"])
+app.include_router(admin.router)
 
 artifacts_dir = Path("experiments/artifacts")
 artifacts_dir.mkdir(parents=True, exist_ok=True)

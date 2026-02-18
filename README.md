@@ -142,8 +142,7 @@ Deploy steps:
 4. Deploy.
 
 Blueprint services included:
-- `simazon-ui-api` (web app)
-- `simazon-episode-worker` (episode generation worker)
+- `simazon-ui-api` (single web app)
 
 After deploy:
 - Fake storefront home: `/ui`
@@ -154,8 +153,22 @@ Notes:
 - Replay viewer expects episode artifacts to be present under `experiments/artifacts` and JSON reports under `experiments/reports`.
 - Render web instances are ephemeral; store long-lived reports/screenshots in object storage if needed.
 
-Worker behavior:
-- Script: `scripts/render_worker.py`
-- Default mode: continuous loop every `JOB_INTERVAL_SECONDS` (default 1800s)
-- Output reports: `experiments/reports/render/episodes_<timestamp>.json` and `.summary.json`
-- Set `WORKER_MODE=once` to run a single generation cycle.
+Run jobs on demand (single-service mode):
+- `POST /admin/run-experiment`
+- `GET /admin/jobs`
+- `GET /admin/jobs/{job_id}`
+
+Auth for admin routes:
+- Set `ADMIN_TOKEN` in Render (auto-generated in `render.yaml`)
+- Send it in either:
+  - `x-admin-token: <token>`
+  - `Authorization: Bearer <token>`
+
+Example:
+
+```bash
+curl -X POST "https://<your-render-domain>/admin/run-experiment" \
+  -H "Content-Type: application/json" \
+  -H "x-admin-token: <ADMIN_TOKEN>" \
+  -d '{}'
+```

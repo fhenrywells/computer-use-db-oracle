@@ -13,30 +13,5 @@ services:
         sync: false
       - key: MONGO_DB
         value: simazon
-
-  - type: worker
-    name: simazon-episode-worker
-    runtime: python
-    rootDir: .
-    buildCommand: pip install -r requirements-worker.txt
-    startCommand: python scripts/render_worker.py
-    autoDeploy: true
-    envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.11
-      - key: MONGO_URI
-        sync: false
-      - key: MONGO_DB
-        value: simazon
-      - key: MONGO_COLLECTION
-        value: products
-      - key: WORKER_MODE
-        value: loop
-      - key: JOB_INTERVAL_SECONDS
-        value: "1800"
-      - key: EXPERIMENT_CONFIG
-        value: experiments/configs/exp_screenshot_compare.yaml
-      - key: TASKS_FILE
-        value: tasks/starter_20.json
-      - key: CATALOG_FILE
-        value: agent/catalog/ui_catalog.yaml
+      - key: ADMIN_TOKEN
+        generateValue: true
