@@ -1,17 +1,3 @@
-{
-  "$jsonSchema": {
-    "bsonType": "object",
-    "required": ["asin", "title"],
-    "properties": {
-      "asin": { "bsonType": "string" },
-      "title": { "bsonType": "string" },
-      "price": { "bsonType": ["double", "int", "null"] },
-      "brand": { "bsonType": ["string", "null"] },
-      "category_leaf": { "bsonType": ["string", "null"] },
-      "rating_avg": { "bsonType": ["double", "int", "null"] },
-      "rating_count": { "bsonType": ["int", "null"] },
-      "related": { "bsonType": ["object", "null"] }
-    }
-  }
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:524c6d88bf32587f9ec28c4781f0bbc0d2a1d723078088ce7bad4e276fa5c30b
+size 534
