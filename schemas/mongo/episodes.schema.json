@@ -1,0 +1,16 @@
+{
+  "$jsonSchema": {
+    "bsonType": "object",
+    "required": ["episode_id", "task_id", "agent_variant", "start_ts"],
+    "properties": {
+      "episode_id": { "bsonType": "string" },
+      "task_id": { "bsonType": "string" },
+      "agent_variant": { "bsonType": "string" },
+      "success": { "bsonType": ["bool", "null"] },
+      "steps": { "bsonType": ["int", "null"] },
+      "start_ts": { "bsonType": "date" },
+      "end_ts": { "bsonType": ["date", "null"] }
+    }
+  }
+}
+

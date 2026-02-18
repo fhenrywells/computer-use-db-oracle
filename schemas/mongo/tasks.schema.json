@@ -1,0 +1,45 @@
+{
+  "$jsonSchema": {
+    "bsonType": "object",
+    "required": [
+      "task_id",
+      "workload_type",
+      "start_url",
+      "spec",
+      "oracle"
+    ],
+    "properties": {
+      "task_id": {
+        "bsonType": "string"
+      },
+      "workload_type": {
+        "enum": [
+          "find_cheapest_under_constraints",
+          "find_highest_rated_in_brand_category",
+          "buy_exact_sku",
+          "graph_browse_related"
+        ]
+      },
+      "start_url": {
+        "bsonType": [
+          "string",
+          "object"
+        ]
+      },
+      "difficulty": {
+        "bsonType": "int",
+        "minimum": 1,
+        "maximum": 10
+      },
+      "spec": {
+        "bsonType": "object"
+      },
+      "oracle": {
+        "bsonType": "object"
+      },
+      "notes": {
+        "bsonType": "string"
+      }
+    }
+  }
+}

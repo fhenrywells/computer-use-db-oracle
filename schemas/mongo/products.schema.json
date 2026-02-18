@@ -1,0 +1,17 @@
+{
+  "$jsonSchema": {
+    "bsonType": "object",
+    "required": ["asin", "title"],
+    "properties": {
+      "asin": { "bsonType": "string" },
+      "title": { "bsonType": "string" },
+      "price": { "bsonType": ["double", "int", "null"] },
+      "brand": { "bsonType": ["string", "null"] },
+      "category_leaf": { "bsonType": ["string", "null"] },
+      "rating_avg": { "bsonType": ["double", "int", "null"] },
+      "rating_count": { "bsonType": ["int", "null"] },
+      "related": { "bsonType": ["object", "null"] }
+    }
+  }
+}
+

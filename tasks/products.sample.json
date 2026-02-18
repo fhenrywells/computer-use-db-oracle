@@ -1,0 +1,43 @@
+[
+  {
+    "asin": "A-001",
+    "title": "Wireless Mouse Compact",
+    "brand": "Acme",
+    "category_leaf": "Electronics",
+    "price": 19.99,
+    "rating_avg": 4.3,
+    "rating_count": 210,
+    "related": {
+      "also_bought": ["A-002"],
+      "also_viewed": ["A-003"],
+      "bought_together": ["A-004"]
+    }
+  },
+  {
+    "asin": "A-002",
+    "title": "Gaming Mouse Pad XL",
+    "brand": "Acme",
+    "category_leaf": "Electronics",
+    "price": 12.49,
+    "rating_avg": 4.1,
+    "rating_count": 88
+  },
+  {
+    "asin": "A-003",
+    "title": "Bluetooth Keyboard Slim",
+    "brand": "Nova",
+    "category_leaf": "Electronics",
+    "price": 29.99,
+    "rating_avg": 4.5,
+    "rating_count": 140
+  },
+  {
+    "asin": "A-004",
+    "title": "USB-C Hub 6-in-1",
+    "brand": "Nova",
+    "category_leaf": "Electronics",
+    "price": 24.99,
+    "rating_avg": 4.0,
+    "rating_count": 65
+  }
+]

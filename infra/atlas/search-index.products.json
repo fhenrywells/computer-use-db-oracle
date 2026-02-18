@@ -1,0 +1,11 @@
+{
+  "mappings": {
+    "dynamic": false,
+    "fields": {
+      "title": { "type": "string" },
+      "brand": { "type": "string" },
+      "category_leaf": { "type": "string" }
+    }
+  }
+}
+

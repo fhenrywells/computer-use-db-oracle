@@ -1,0 +1,181 @@
+version: "0.1.0"
+site:
+  name: "simazon"
+  base_url: "http://localhost:3000"
+
+truth_markers:
+  meta_view_id_selector: 'meta[name="view-id"]'
+  meta_view_id_attr: "content"
+
+views:
+  - view_id: "HOME"
+    root_selector: '[data-testid="view-home"]'
+    state_vars:
+      - name: "search_query"
+        type: "string"
+        selector: '[data-testid="search-input"]'
+        attr: "value"
+        default: ""
+      - name: "cart_count"
+        type: "int"
+        selector: '[data-testid="cart-count"]'
+        text_parse: "int"
+        default: 0
+    actions:
+      - type: "Search"
+        args_schema:
+          query:
+            type: "string"
+            min_len: 1
+        postconditions:
+          any:
+            - view_is: "SEARCH_RESULTS"
+            - view_is: "EMPTY_RESULTS"
+
+  - view_id: "SEARCH_RESULTS"
+    root_selector: '[data-testid="view-search-results"]'
+    state_vars:
+      - name: "applied_facets"
+        type: "list"
+        selector_all: '[data-testid="facet-chip"]'
+        extract:
+          text: true
+        default: []
+      - name: "sort_key"
+        type: "string"
+        selector: '[data-testid="sort-select"]'
+        attr: "value"
+        default: "relevance"
+      - name: "result_count"
+        type: "int"
+        selector: '[data-testid="result-count"]'
+        text_parse: "int"
+        default: 0
+    actions:
+      - type: "ApplyFacet"
+        args_schema:
+          facet:
+            type: "string"
+            enum: ["brand", "category", "price_bucket", "rating_bucket"]
+          value:
+            type: "string"
+            min_len: 1
+      - type: "SortBy"
+        args_schema:
+          key:
+            type: "string"
+            enum: ["relevance", "price_asc", "price_desc", "rating_desc"]
+      - type: "OpenResult"
+        args_schema:
+          rank:
+            type: "int"
+            min: 1
+            max: 50
+        postconditions:
+          must:
+            - view_is: "PRODUCT_DETAIL"
+      - type: "GoToCart"
+        args_schema: {}
+        postconditions:
+          must:
+            - view_is: "CART"
+    priors:
+      action_weights:
+        ApplyFacet: 0.45
+        SortBy: 0.25
+        OpenResult: 0.25
+        GoToCart: 0.05
+
+  - view_id: "EMPTY_RESULTS"
+    root_selector: '[data-testid="view-empty-results"]'
+    state_vars:
+      - name: "search_query"
+        type: "string"
+        selector: '[data-testid="search-input"]'
+        attr: "value"
+        default: ""
+    actions:
+      - type: "RefineSearch"
+        args_schema:
+          query:
+            type: "string"
+            min_len: 1
+
+  - view_id: "PRODUCT_DETAIL"
+    root_selector: '[data-testid="view-product-detail"]'
+    state_vars:
+      - name: "asin"
+        type: "string"
+        selector: '[data-testid="product-asin"]'
+        text: true
+      - name: "price"
+        type: "float"
+        selector: '[data-testid="product-price"]'
+        text_parse: "float"
+      - name: "brand"
+        type: "string"
+        selector: '[data-testid="product-brand"]'
+        text: true
+      - name: "cart_count"
+        type: "int"
+        selector: '[data-testid="cart-count"]'
+        text_parse: "int"
+        default: 0
+    actions:
+      - type: "AddToCart"
+        args_schema:
+          qty:
+            type: "int"
+            min: 1
+            max: 10
+        postconditions:
+          must:
+            - cart_count_delta:
+                min_increase: 1
+      - type: "GoToCart"
+        args_schema: {}
+        postconditions:
+          must:
+            - view_is: "CART"
+
+  - view_id: "CART"
+    root_selector: '[data-testid="view-cart"]'
+    state_vars:
+      - name: "cart_asins"
+        type: "list"
+        selector_all: '[data-testid="cart-item"]'
+        extract:
+          attr: "data-asin"
+        default: []
+      - name: "cart_count"
+        type: "int"
+        selector: '[data-testid="cart-count"]'
+        text_parse: "int"
+        default: 0
+    actions:
+      - type: "SetQuantity"
+        args_schema:
+          asin:
+            type: "string"
+            min_len: 1
+          qty:
+            type: "int"
+            min: 0
+            max: 10
+      - type: "ProceedToCheckout"
+        args_schema: {}
+        postconditions:
+          must:
+            - view_is: "CHECKOUT"
+
+  - view_id: "CHECKOUT"
+    root_selector: '[data-testid="view-checkout"]'
+    state_vars:
+      - name: "order_total"
+        type: "float"
+        selector: '[data-testid="order-total"]'
+        text_parse: "float"
+        default: 0.0
+    actions:
+      - type: "PlaceOrder"
+        args_schema: {}

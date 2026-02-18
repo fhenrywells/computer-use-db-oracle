@@ -1,0 +1,91 @@
+{
+  "task_id": "T001",
+  "agent_variant": "typed_action",
+  "success": true,
+  "steps_to_success": 3,
+  "steps": [
+    {
+      "t": 0,
+      "view_pred": "HOME",
+      "action": {
+        "type": "Search",
+        "args": {
+          "query": "Odowalker Pack of 4 Dishwasher"
+        }
+      },
+      "postcondition_ok": true,
+      "event": "Searched",
+      "state_vars": {
+        "view_id": "SEARCH_RESULTS",
+        "search_query": "Odowalker Pack of 4 Dishwasher",
+        "applied_constraints": {},
+        "sort_key": "relevance",
+        "result_asins": [
+          "B07MLZYHJ4",
+          "B07MJFKMBW"
+        ],
+        "result_count": 2,
+        "selected_asin": null,
+        "cart_asins": []
+      },
+      "oracle_done": false
+    },
+    {
+      "t": 1,
+      "view_pred": "SEARCH_RESULTS",
+      "action": {
+        "type": "OpenResult",
+        "args": {
+          "rank": 2
+        }
+      },
+      "postcondition_ok": true,
+      "event": "OpenedProduct",
+      "state_vars": {
+        "view_id": "PRODUCT_DETAIL",
+        "search_query": "Odowalker Pack of 4 Dishwasher",
+        "applied_constraints": {},
+        "sort_key": "relevance",
+        "result_asins": [
+          "B07MLZYHJ4",
+          "B07MJFKMBW"
+        ],
+        "result_count": 2,
+        "selected_asin": "B07MJFKMBW",
+        "cart_asins": []
+      },
+      "oracle_done": false
+    },
+    {
+      "t": 2,
+      "view_pred": "PRODUCT_DETAIL",
+      "action": {
+        "type": "AddToCart",
+        "args": {
+          "qty": 1
+        }
+      },
+      "postcondition_ok": true,
+      "event": "AddedToCart",
+      "state_vars": {
+        "view_id": "PRODUCT_DETAIL",
+        "search_query": "Odowalker Pack of 4 Dishwasher",
+        "applied_constraints": {},
+        "sort_key": "relevance",
+        "result_asins": [
+          "B07MLZYHJ4",
+          "B07MJFKMBW"
+        ],
+        "result_count": 2,
+        "selected_asin": "B07MJFKMBW",
+        "cart_asins": [
+          "B07MJFKMBW"
+        ]
+      },
+      "oracle_done": true
+    }
+  ],
+  "oracle_target_asin": "B07MJFKMBW",
+  "start_ts": "2026-02-18T00:36:27.397265+00:00",
+  "end_ts": "2026-02-18T00:36:27.878282+00:00"
+}
