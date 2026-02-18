@@ -3,7 +3,12 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
-from app.routes import admin, cart, checkout, products, search, ui
+import app.routes.admin as admin
+import app.routes.cart as cart
+import app.routes.checkout as checkout
+import app.routes.products as products
+import app.routes.search as search
+import app.routes.ui as ui
 
 app = FastAPI(title="simazon-api")
 app.include_router(search.router, prefix="/search", tags=["search"])
