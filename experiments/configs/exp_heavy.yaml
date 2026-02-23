@@ -1,0 +1,30 @@
+name: "exp_heavy_v1"
+seed: 42
+max_steps_per_episode: 40
+runs_per_task: 10
+
+variants:
+  - baseline_freeform
+  - state_aware
+  - typed_action
+  - typed_action_priors
+  - screenshot_based
+  - vision_ocr
+
+task_sets:
+  - starter_20
+
+ui_perturbation_profile: "default"
+
+metrics:
+  - success_rate
+  - steps_to_success_median
+  - invalid_action_rate
+  - thrash_score
+  - view_misclassification_rate
+  - regret_steps
+
+logging:
+  store_dom_hash: true
+  store_screenshot: true
+  write_steps_collection: true
