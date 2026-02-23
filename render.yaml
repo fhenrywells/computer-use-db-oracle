@@ -3,7 +3,7 @@ services:
     name: simazon-ui-api
     runtime: python
     rootDir: services/api
-    buildCommand: pip install -r requirements.txt
+    buildCommand: pip install -r requirements.txt && python -m playwright install chromium
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     autoDeploy: true
     envVars:
