@@ -13,10 +13,10 @@ def _infer_view(text: str) -> str:
         return "PRODUCT_DETAIL"
     if "add to cart" in t and "back to results" in t:
         return "PRODUCT_DETAIL"
+    if "empty cart" in t or "cart subtotal" in t or "cart items" in t:
+        return "CART"
     if "search products" in t and "go to cart" in t:
         return "HOME"
-    if "empty cart" in t or "cart_count" in t and "search products" not in t:
-        return "CART"
     if "no results" in t:
         return "EMPTY_RESULTS"
     if "result" in t or "brand" in t or "category" in t or "open" in t:
@@ -29,7 +29,7 @@ def _has_keyword(text: str, keyword: str) -> bool:
 
 
 def next_action(task: dict[str, Any], visual_obs: dict[str, Any]) -> dict[str, Any]:
-    shot = visual_obs.get("screenshot_path", "")
+    shot = visual_obs.get("screenshot_abspath") or visual_obs.get("screenshot_path", "")
     text = ""
     ocr_provider = "none"
     if shot and Path(shot).exists():
@@ -37,7 +37,12 @@ def next_action(task: dict[str, Any], visual_obs: dict[str, Any]) -> dict[str, A
         text = str(ocr.get("text", ""))
         ocr_provider = str(ocr.get("provider", "none"))
 
-    inferred_view = _infer_view(text) if text else str(visual_obs.get("view_id", "UNKNOWN"))
+    inferred_view = _infer_view(text) if text else "UNKNOWN"
+    if inferred_view == "UNKNOWN":
+        inferred_view = str(visual_obs.get("view_id", "UNKNOWN"))
+    # Stabilize OCR mistakes with screenshot-classifier fallback on detail pages.
+    if str(visual_obs.get("view_id")) == "PRODUCT_DETAIL" and inferred_view != "PRODUCT_DETAIL":
+        inferred_view = "PRODUCT_DETAIL"
     workload = task.get("workload_type")
     add_to_cart_count = int(visual_obs.get("add_to_cart_count", 0))
     opened_related_count = int(visual_obs.get("opened_related_count", 0))
@@ -58,7 +63,7 @@ def next_action(task: dict[str, Any], visual_obs: dict[str, Any]) -> dict[str, A
     if inferred_view == "PRODUCT_DETAIL":
         if workload == "graph_browse_related" and opened_related_count < 1 and _has_keyword(text, "related"):
             return {"type": "OpenRelated", "args": {"rank": 1}, "_debug": debug}
-        if add_to_cart_count < 1 and _has_keyword(text, "add"):
+        if add_to_cart_count < 1 and (_has_keyword(text, "add") or _has_keyword(text, "cart") or not text.strip()):
             return {"type": "AddToCart", "args": {"qty": 1}, "_debug": debug}
         return {"type": "NoOp", "args": {"reason": "ocr_product_done"}, "_debug": debug}
 

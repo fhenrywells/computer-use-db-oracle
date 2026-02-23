@@ -45,6 +45,7 @@ def _pick_action(
             "opened_related_count": opened_related_count,
             "step_idx": observation.get("step_idx", 0),
             "screenshot_path": observation.get("screenshot_path"),
+            "screenshot_abspath": observation.get("screenshot_abspath"),
         }
         return vision_ocr_next_action(task, visual_obs)
     if variant == "state_aware":

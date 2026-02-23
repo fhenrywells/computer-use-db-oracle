@@ -66,6 +66,7 @@ class BrowserPlaywrightEnv:
         feats = screenshot_features(shot_path)
         # Keep replay paths relative to the /artifacts static mount.
         feats["screenshot_path"] = shot_path.name
+        feats["screenshot_abspath"] = str(shot_path)
         feats["step_idx"] = step_idx
         return feats
 

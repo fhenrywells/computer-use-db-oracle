@@ -17,9 +17,9 @@
         "Search": 1.0
       },
       "SEARCH_RESULTS": {
-        "OpenResult": 0.5789473684210527,
-        "SortBy": 0.10526315789473684,
-        "ApplyFacet": 0.3157894736842105
+        "SortBy": 0.05263157894736842,
+        "ApplyFacet": 0.32456140350877194,
+        "OpenResult": 0.6228070175438596
       },
       "PRODUCT_DETAIL": {
         "AddToCart": 1.0
@@ -30,9 +30,9 @@
         "Search": 1.0
       },
       "SEARCH_RESULTS": {
-        "OpenResult": 0.34782608695652173,
-        "SortBy": 0.17391304347826086,
-        "ApplyFacet": 0.4782608695652174
+        "SortBy": 0.15838509316770186,
+        "ApplyFacet": 0.45341614906832295,
+        "OpenResult": 0.38819875776397517
       },
       "PRODUCT_DETAIL": {
         "AddToCart": 1.0
@@ -40,8 +40,8 @@
     },
     "graph_browse_related": {
       "PRODUCT_DETAIL": {
-        "AddToCart": 0.5,
-        "OpenRelated": 0.5
+        "OpenRelated": 0.5,
+        "AddToCart": 0.5
       }
     }
   }
