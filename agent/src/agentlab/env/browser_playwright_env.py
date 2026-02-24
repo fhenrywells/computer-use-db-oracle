@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import os
+import subprocess
+import sys
 import time
 from pathlib import Path
 from typing import Any
@@ -23,13 +26,34 @@ class BrowserPlaywrightEnv:
         self.base_url = base_url.rstrip("/")
         self.artifacts_dir = Path(artifacts_dir)
         self.artifacts_dir.mkdir(parents=True, exist_ok=True)
+        # Keep browsers in-project so ephemeral runtime caches don't break launches.
+        self._browsers_path = os.getenv("PLAYWRIGHT_BROWSERS_PATH", str(Path.cwd() / ".playwright"))
+        os.environ["PLAYWRIGHT_BROWSERS_PATH"] = self._browsers_path
         self.sid = f"s{int(time.time())}"
+
+    def _install_chromium(self) -> None:
+        env = os.environ.copy()
+        env["PLAYWRIGHT_BROWSERS_PATH"] = self._browsers_path
+        subprocess.run(
+            [sys.executable, "-m", "playwright", "install", "chromium"],
+            env=env,
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
 
     def _ensure(self) -> None:
         if self._pw is not None:
             return
         self._pw = self._sync_playwright().start()
-        self._browser = self._pw.chromium.launch(headless=True)
+        try:
+            self._browser = self._pw.chromium.launch(headless=True)
+        except Exception as exc:
+            msg = str(exc)
+            if "Executable doesn't exist" not in msg:
+                raise
+            self._install_chromium()
+            self._browser = self._pw.chromium.launch(headless=True)
         self._ctx = self._browser.new_context(viewport={"width": 1440, "height": 1024})
         self._page = self._ctx.new_page()
 
