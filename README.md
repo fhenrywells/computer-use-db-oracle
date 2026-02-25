@@ -1,4 +1,4 @@
-# computer-use-db-oracle
+# db-oracle-agent-eval
 
 Research prototype for evaluating shopping agents on a simulated storefront.
 
@@ -84,3 +84,4 @@ Read these fields from the job JSON:
 - `screenshot_base_url` should usually be your API base URL (same as `$BASE`).
 - Replay serves screenshots from `/artifacts/<filename>`.
 - If `/admin/jobs/<job_id>` returns 404 during long runs, job state was likely lost across restart (current admin job store is in-memory).
+- Sample heavy-run rollups are checked in at `docs/results/exp_heavy_sample_2026-02-24.summary.json`.

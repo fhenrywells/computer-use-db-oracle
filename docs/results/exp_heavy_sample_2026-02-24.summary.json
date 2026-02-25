@@ -1,0 +1,300 @@
+{
+  "generated_at": "2026-02-24T19:17:33.980305+00:00",
+  "config": "/opt/render/project/src/experiments/configs/exp_heavy.yaml",
+  "episodes_file": "/opt/render/project/src/experiments/reports/admin/a3270b890741_20260224T190315Z.json",
+  "learned_priors_file": "agent/catalog/learned_priors.json",
+  "rollups": {
+    "overall": {
+      "episodes": 120,
+      "successes": 42,
+      "success_rate": 0.35,
+      "median_steps_to_success": 3.0,
+      "avg_invalid_action_rate": 0.0006,
+      "avg_thrash_score": 0.6017
+    },
+    "by_variant": {
+      "baseline_freeform": {
+        "episodes": 20,
+        "successes": 0,
+        "success_rate": 0.0,
+        "median_steps_to_success": null,
+        "avg_invalid_action_rate": 0.0,
+        "avg_thrash_score": 0.975
+      },
+      "screenshot_based": {
+        "episodes": 20,
+        "successes": 2,
+        "success_rate": 0.1,
+        "median_steps_to_success": 3.0,
+        "avg_invalid_action_rate": 0.0038,
+        "avg_thrash_score": 0.8138
+      },
+      "state_aware": {
+        "episodes": 20,
+        "successes": 6,
+        "success_rate": 0.3,
+        "median_steps_to_success": 2.5,
+        "avg_invalid_action_rate": 0.0,
+        "avg_thrash_score": 0.6475
+      },
+      "typed_action": {
+        "episodes": 20,
+        "successes": 17,
+        "success_rate": 0.85,
+        "median_steps_to_success": 3,
+        "avg_invalid_action_rate": 0.0,
+        "avg_thrash_score": 0.13
+      },
+      "typed_action_priors": {
+        "episodes": 20,
+        "successes": 15,
+        "success_rate": 0.75,
+        "median_steps_to_success": 3,
+        "avg_invalid_action_rate": 0.0,
+        "avg_thrash_score": 0.2263
+      },
+      "vision_ocr": {
+        "episodes": 20,
+        "successes": 2,
+        "success_rate": 0.1,
+        "median_steps_to_success": 3.0,
+        "avg_invalid_action_rate": 0.0,
+        "avg_thrash_score": 0.8175
+      }
+    },
+    "by_workload": {
+      "buy_exact_sku": {
+        "episodes": 30,
+        "successes": 14,
+        "success_rate": 0.4667,
+        "median_steps_to_success": 3.0,
+        "avg_invalid_action_rate": 0.0,
+        "avg_thrash_score": 0.4958
+      },
+      "find_cheapest_under_constraints": {
+        "episodes": 42,
+        "successes": 10,
+        "success_rate": 0.2381,
+        "median_steps_to_success": 3.0,
+        "avg_invalid_action_rate": 0.0,
+        "avg_thrash_score": 0.6994
+      },
+      "find_highest_rated_in_brand_category": {
+        "episodes": 30,
+        "successes": 9,
+        "success_rate": 0.3,
+        "median_steps_to_success": 4,
+        "avg_invalid_action_rate": 0.0,
+        "avg_thrash_score": 0.6467
+      },
+      "graph_browse_related": {
+        "episodes": 18,
+        "successes": 9,
+        "success_rate": 0.5,
+        "median_steps_to_success": 2,
+        "avg_invalid_action_rate": 0.0042,
+        "avg_thrash_score": 0.475
+      }
+    },
+    "by_variant_workload": {
+      "baseline_freeform::buy_exact_sku": {
+        "episodes": 5,
+        "successes": 0,
+        "success_rate": 0.0,
+        "median_steps_to_success": null,
+        "avg_invalid_action_rate": 0.0,
+        "avg_thrash_score": 0.975
+      },
+      "baseline_freeform::find_cheapest_under_constraints": {
+        "episodes": 7,
+        "successes": 0,
+        "success_rate": 0.0,
+        "median_steps_to_success": null,
+        "avg_invalid_action_rate": 0.0,
+        "avg_thrash_score": 0.975
+      },
+      "baseline_freeform::find_highest_rated_in_brand_category": {
+        "episodes": 5,
+        "successes": 0,
+        "success_rate": 0.0,
+        "median_steps_to_success": null,
+        "avg_invalid_action_rate": 0.0,
+        "avg_thrash_score": 0.975
+      },
+      "baseline_freeform::graph_browse_related": {
+        "episodes": 3,
+        "successes": 0,
+        "success_rate": 0.0,
+        "median_steps_to_success": null,
+        "avg_invalid_action_rate": 0.0,
+        "avg_thrash_score": 0.975
+      },
+      "screenshot_based::buy_exact_sku": {
+        "episodes": 5,
+        "successes": 2,
+        "success_rate": 0.4,
+        "median_steps_to_success": 3.0,
+        "avg_invalid_action_rate": 0.0,
+        "avg_thrash_score": 0.54
+      },
+      "screenshot_based::find_cheapest_under_constraints": {
+        "episodes": 7,
+        "successes": 0,
+        "success_rate": 0.0,
+        "median_steps_to_success": null,
+        "avg_invalid_action_rate": 0.0,
+        "avg_thrash_score": 0.9
+      },
+      "screenshot_based::find_highest_rated_in_brand_category": {
+        "episodes": 5,
+        "successes": 0,
+        "success_rate": 0.0,
+        "median_steps_to_success": null,
+        "avg_invalid_action_rate": 0.0,
+        "avg_thrash_score": 0.9
+      },
+      "screenshot_based::graph_browse_related": {
+        "episodes": 3,
+        "successes": 0,
+        "success_rate": 0.0,
+        "median_steps_to_success": null,
+        "avg_invalid_action_rate": 0.025,
+        "avg_thrash_score": 0.925
+      },
+      "state_aware::buy_exact_sku": {
+        "episodes": 5,
+        "successes": 2,
+        "success_rate": 0.4,
+        "median_steps_to_success": 3.0,
+        "avg_invalid_action_rate": 0.0,
+        "avg_thrash_score": 0.555
+      },
+      "state_aware::find_cheapest_under_constraints": {
+        "episodes": 7,
+        "successes": 1,
+        "success_rate": 0.1429,
+        "median_steps_to_success": 3,
+        "avg_invalid_action_rate": 0.0,
+        "avg_thrash_score": 0.7929
+      },
+      "state_aware::find_highest_rated_in_brand_category": {
+        "episodes": 5,
+        "successes": 0,
+        "success_rate": 0.0,
+        "median_steps_to_success": null,
+        "avg_invalid_action_rate": 0.0,
+        "avg_thrash_score": 0.925
+      },
+      "state_aware::graph_browse_related": {
+        "episodes": 3,
+        "successes": 3,
+        "success_rate": 1.0,
+        "median_steps_to_success": 2,
+        "avg_invalid_action_rate": 0.0,
+        "avg_thrash_score": 0.0
+      },
+      "typed_action::buy_exact_sku": {
+        "episodes": 5,
+        "successes": 4,
+        "success_rate": 0.8,
+        "median_steps_to_success": 3.0,
+        "avg_invalid_action_rate": 0.0,
+        "avg_thrash_score": 0.18
+      },
+      "typed_action::find_cheapest_under_constraints": {
+        "episodes": 7,
+        "successes": 5,
+        "success_rate": 0.7143,
+        "median_steps_to_success": 3,
+        "avg_invalid_action_rate": 0.0,
+        "avg_thrash_score": 0.2429
+      },
+      "typed_action::find_highest_rated_in_brand_category": {
+        "episodes": 5,
+        "successes": 5,
+        "success_rate": 1.0,
+        "median_steps_to_success": 4,
+        "avg_invalid_action_rate": 0.0,
+        "avg_thrash_score": 0.0
+      },
+      "typed_action::graph_browse_related": {
+        "episodes": 3,
+        "successes": 3,
+        "success_rate": 1.0,
+        "median_steps_to_success": 2,
+        "avg_invalid_action_rate": 0.0,
+        "avg_thrash_score": 0.0
+      },
+      "typed_action_priors::buy_exact_sku": {
+        "episodes": 5,
+        "successes": 4,
+        "success_rate": 0.8,
+        "median_steps_to_success": 3.0,
+        "avg_invalid_action_rate": 0.0,
+        "avg_thrash_score": 0.185
+      },
+      "typed_action_priors::find_cheapest_under_constraints": {
+        "episodes": 7,
+        "successes": 4,
+        "success_rate": 0.5714,
+        "median_steps_to_success": 3.0,
+        "avg_invalid_action_rate": 0.0,
+        "avg_thrash_score": 0.3857
+      },
+      "typed_action_priors::find_highest_rated_in_brand_category": {
+        "episodes": 5,
+        "successes": 4,
+        "success_rate": 0.8,
+        "median_steps_to_success": 4.0,
+        "avg_invalid_action_rate": 0.0,
+        "avg_thrash_score": 0.18
+      },
+      "typed_action_priors::graph_browse_related": {
+        "episodes": 3,
+        "successes": 3,
+        "success_rate": 1.0,
+        "median_steps_to_success": 2,
+        "avg_invalid_action_rate": 0.0,
+        "avg_thrash_score": 0.0
+      },
+      "vision_ocr::buy_exact_sku": {
+        "episodes": 5,
+        "successes": 2,
+        "success_rate": 0.4,
+        "median_steps_to_success": 3.0,
+        "avg_invalid_action_rate": 0.0,
+        "avg_thrash_score": 0.54
+      },
+      "vision_ocr::find_cheapest_under_constraints": {
+        "episodes": 7,
+        "successes": 0,
+        "success_rate": 0.0,
+        "median_steps_to_success": null,
+        "avg_invalid_action_rate": 0.0,
+        "avg_thrash_score": 0.9
+      },
+      "vision_ocr::find_highest_rated_in_brand_category": {
+        "episodes": 5,
+        "successes": 0,
+        "success_rate": 0.0,
+        "median_steps_to_success": null,
+        "avg_invalid_action_rate": 0.0,
+        "avg_thrash_score": 0.9
+      },
+      "vision_ocr::graph_browse_related": {
+        "episodes": 3,
+        "successes": 0,
+        "success_rate": 0.0,
+        "median_steps_to_success": null,
+        "avg_invalid_action_rate": 0.0,
+        "avg_thrash_score": 0.95
+      }
+    },
+    "prior_effects": {
+      "compared_steps": 176,
+      "diverged_steps": 85,
+      "action_choice_divergence_rate": 0.483,
+      "action_js_divergence": 0.176815
+    }
+  }
+}

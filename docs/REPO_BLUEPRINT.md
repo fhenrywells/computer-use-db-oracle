@@ -1,7 +1,7 @@
 # Repo Blueprint
 
 ```text
-computer-use-db-oracle/
+db-oracle-agent-eval/
   README.md
   docker-compose.yml
   .env.example
